@@ -5,6 +5,15 @@
 // load my library
 require("sms-config.php");
 require("library.php");
+//Connect to Database
+$con = mysql_connect("$host","$DB_usr","$DB_pass");
+if (!$con)
+  {
+  die('Could not connect: ' . mysql_error());
+  }
+
+mysql_select_db("$Database", $con);
+
 // Get the JSON payload sumbitted from SMSified.
 $json = file_get_contents("php://input");
 
@@ -19,14 +28,6 @@ $command = strtoupper($message);
 $senderAddress = substr($senderAddress, -11);
 
 //check if sender is in address book
-$con = mysql_connect("$Host","$DB_usr","$DB_pass");
-if (!$con)
-  {
-  die('Could not connect: ' . mysql_error());
-  }
-
-mysql_select_db("$Database", $con);
-
 $result = mysql_query("SELECT `name` FROM  `$Database`.`contacts` WHERE `address` =".$senderAddress.";");
 $num_rows = mysql_num_rows($result);
 IF ($num_rows < 1)
@@ -72,16 +73,17 @@ IF ($num_rows < 1)
     $myMessage = $senderName . " You are not authorized to send messages to this group.";
     sendMessage($senderAddress,$myMessage);
     }
-        ELSEIF ($senderName != "unknown" and $senderBan != 1 and $senderStatus == 1 and $command != "IN" and $command != "OUT")
+    ELSEIF ($senderName != "unknown" and $senderBan != 1 and $senderStatus == 1 and $command != "IN" and $command != "OUT")
     {
-  $deliveryInfo = mysql_query("SELECT address FROM  `$Database`.`contacts` WHERE `status` = 1 ;");
-  mysql_query("INSERT INTO  `$Database`.`sms` (`ID` ,`from` ,`message`) VALUES (NULL ,  '$senderAddress',  '$message');");
-  while($addresses = mysql_fetch_array($deliveryInfo)) 
+  $result = mysql_query("SELECT * FROM `$Database`.`contacts`;");
+  $myMessage = $senderName . ": ".$message;
+  while($row = mysql_fetch_array($result)) 
   {
-	$senderAddressSend = $addresses['address'];
-	$myMessage = $senderName . ": ".$message;
-  sendMessage($senderAddressSend,$myMessage);
+	$Send = substr($row['address'], -11);
+	sendMessage($Send,$myMessage);
+	sleep(1);
   }
+   mysql_query("INSERT INTO  `$Database`.`sms` (`from`,`message`) VALUES ('$senderAddress','$message');");
    }
     ELSE 
     {
@@ -91,3 +93,4 @@ IF ($num_rows < 1)
   }
 mysql_close($con);
 ?>
+

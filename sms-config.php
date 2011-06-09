@@ -3,6 +3,7 @@
 $Username = "";
 $Password = ""; 
 $Phone = "";
+define('POSTURL', 'https://user:password@api.smsified.com/v1/smsmessaging/outbound/{Phone}/requests');
 
 //Database Info
 $Host = "";
