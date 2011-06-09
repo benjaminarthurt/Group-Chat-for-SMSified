@@ -12,7 +12,7 @@ $sentMessage = urlencode($sentMessage);
 
 $address = substr($address, -11);
 
- define('POSTURL', 'https://'.$Username.':'.$Password.'@api.smsified.com/v1/smsmessaging/outbound/'.$Phone.'/requests');
+define('POSTURL', 'https://'.$Username.':'.$Password.'@api.smsified.com/v1/smsmessaging/outbound/'.$Phone.'/requests');
 
  define('POSTVARS', 'address='.$address.'&message='.$sentMessage);  // POST VARIABLES TO BE SENT
 
