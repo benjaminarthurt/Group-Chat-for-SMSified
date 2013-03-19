@@ -11,5 +11,5 @@ Links
 -------
 
 
-* [BenTownsend.com](http://townsendservices.com)
+* [TownsendServices.com](http://townsendservices.com)
 
